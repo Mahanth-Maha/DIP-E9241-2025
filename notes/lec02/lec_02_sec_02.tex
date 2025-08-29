@@ -1,3 +1,4 @@
+% !TEX root=./../maha-dip-notes.tex
 \section{Histogram Equalization}
 
 Histogram equalization is a method to adjust image intensities to enhance contrast. The histogram of an image is "flattened" (equalized), redistributing pixel values as uniformly as possible over the intensity range.
@@ -13,3 +14,100 @@ where $MN$ is the total number of pixels.
 \dfn{Histogram Equalization Transformation}{
 The transformation $s = HE(r)$ maps each input intensity $r$ to an output intensity $s$ so that $s$ is approximately uniformly distributed over $[0, K-1]$.
 }
+
+\paragraph{Step-by-step Procedure}
+\begin{enumerate}
+    \item Calculate the histogram $h(r)$ of image intensities.
+    \item Normalize to get probability distribution $p(r)$.
+    \item Compute cumulative distribution $HE(r)$.
+    \item Map each $r$ by $s = (K-1) \cdot HE(r)$.
+    \item Replace each $f(x, y)$ with $s$.
+\end{enumerate}
+
+\ex{Histogram Equalization Examp    le}{
+Consider a $4 \times 4$ image:
+$$
+\begin{bmatrix}
+52 & 55 & 61 & 59 \\
+79 & 61 & 76 & 61 \\
+85 & 70 & 79 & 55 \\
+52 & 55 & 61 & 59
+\end{bmatrix}
+$$
+Calculate $h(r)$, $T(r)$, and remap all values using $s = (L-1)T(r)$. This leads to expanded dynamic range and visually improved contrast.
+}
+
+\paragraph{Applications of Histogram Equalization}
+\begin{itemize}
+    \item Enhancement of images with poor contrast.
+    \item Preprocessing for computer vision tasks.
+    \item Medical imaging, remote sensing.
+\end{itemize}
+\nt{Histogram equalization may produce undesirable artifacts if the histogram contains large peaks or is multimodal; local methods may better preserve detail.}
+
+\subsection{Adaptive Histogram Equalization (AHE)}
+
+\dfn{Adaptive Histogram Equalization (AHE)}{A method where histogram equalization is performed on small local regions of the image rather than globally, better enhancing local contrast.}
+
+\paragraph{Use and Algorithm}
+AHE divides the image into tiles, applies histogram equalization to each, and then smoothly stitches them. This improves visibility of features in small regions.
+
+\clm{Local Contrast Advantage}{}{
+AHE enhances the contrast of features that may be obscured by global equalization, especially in images with spatially varying lighting.
+}
+\paragraph{Derivation}
+Let $W_{i,j}$ denote the window centered at pixel $(i, j)$. For each window, compute its local histogram and derive $T_{i, j}(r)$, apply mapping to pixels at $(i, j)$.
+
+\nt{AHE can amplify noise in homogeneous areas; improved methods like Contrast Limited AHE (CLAHE) restrict histogram peaks to reduce artifacts.}
+
+\subsection{Histogram Matching (Specification)}
+
+\dfn{Histogram Matching}{A process to transform an image’s histogram to resemble a specified target histogram—useful for standardizing brightness and contrast between images.}
+
+\paragraph{Use}
+Used in image normalization, look adaptation in film, remote sensing for compensating illumination differences.
+
+\paragraph{Derivation}
+Let $T(r)$ be the equalization transform for the input image, and $G(z)$ for the target histogram:
+\begin{itemize}
+    \item For each pixel with intensity $r$, find $s = T(r)$.
+    \item Find $z$ such that $G(z) \approx s$.
+    \item Map $f(x, y)$ to $z$.
+\end{itemize}
+
+\clm{Histogram Matching Algorithm}{}{
+Applying histogram equalization to both source and reference image, then mapping levels by the inverse CDF, produces an output whose histogram matches the reference.
+}
+\ex{Histogram Matching Example}{
+Suppose $T(r)$ maps $[0, 255]$ to $[0.2, 0.6]$ and $G(z)$ maps its CDF to $[0, 1]$. For $f(x, y) = 61$, $s = T(61) = 0.3$, $z = G^{-1}(0.3)$, so output pixel is set to $z$.
+}
+
+\nt{Histogram matching is essential in applications where uniformity across image datasets is required, such as medical or satellite image analysis.}
+
+\section{Additional Theories and Extensions}
+
+\paragraph{Retinex Theory}
+Retinex posits that the perceived color of a pixel ($I$) is the product of the light source ($L$) and the reflectance ($R$):
+$$
+I(x, y) = L(x, y) \cdot R(x, y)
+$$
+Retinex-based algorithms attempt to decompose an image into illumination and reflectance components for improved color constancy and dynamic range.
+
+\paragraph{Dark Channel Prior}
+Used in haze removal, the \emph{dark channel prior} exploits the property that in most non-sky patches of outdoor images, at least one color channel has very low intensity:
+$$
+\text{dark}(x, y) = \min_{c \in \{r,g,b\}} \left( \min_{(i, j) \in \Omega(x, y)} I^c(i,j) \right)
+$$
+where $\Omega$ is a local patch. This prior helps estimate atmospheric light and transmission map for dehazing.
+
+\nt{Retinex and dark channel prior are advanced theories, bridging classical image processing and physics-based models for real-world improvements.}
+
+\section{Deep Learning Approaches}
+
+Recent methods leverage deep learning to adapt intensity transformations, contrast normalization, or even build custom histogram-equalization-like layers in neural networks\cite{szeliski2010,govindjee2007,bovik2019,gonzalez2008}.
+
+\clm{Learned Point Operations}{}{
+Deep networks can be trained to perform sophisticated global and local contrast adjustments based on task-specific criteria, outperforming traditional fixed algorithms in complex scenarios.
+}
+
+

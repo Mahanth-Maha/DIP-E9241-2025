@@ -1,9 +1,7 @@
+% !TEX root=./../maha-dip-notes.tex
 \section{Spatial Smoothing Filters}
-Spatial smoothing filters are a concept in image processing used to reduce noise 
-and smooth out variations in an image by averaging or combining pixel values 
-in a local neighborhood.
+Spatial smoothing filters are used to reduce noise and smooth out variations in an image by averaging or combining pixel values in a local neighborhood.
 
-\vspace{4pt}
 \textbf{Types of Filters:}
 \begin{enumerate}
     \item \textbf{Averaging Filter:} Replaces each pixel with the average of its neighbours.  
@@ -47,7 +45,7 @@ K=\left(\sum_{m=-1}^{1}\sum_{n=-1}^{1} e^{-(m^2+n^2)}\right)^{-1}.
     \]
 \end{enumerate}
 
-\section{Applications of Spatial Smoothing Filters}
+\subsection{Applications of Spatial Smoothing Filters}
 Spatial smoothing filters are widely used in image processing tasks. 
 Some common applications include:
 \begin{enumerate}
@@ -70,7 +68,7 @@ Some common applications include:
     (e.g., object detection and image compression).
 \end{enumerate}
 
-\section{Spatial Sharpening Filters}
+\subsection{Spatial Sharpening Filters}
 \[
 \frac{\partial f}{\partial x} = f(m+1,n) - f(m,n) = \nabla f_x(m,n) \rightarrow \textit{Image gradient in x-direction}
 \]
@@ -92,19 +90,17 @@ Some common applications include:
 \quad=\quad  f(m,n+1) - 2f(m,n) + f(m,n-1)
 \]
 
-\section{Laplacian of an Image}
+\subsection{Laplacian of an Image}
 The Laplacian is a second-order derivative operator that highlights regions of rapid intensity change in an image.
 It works by comparing a pixel’s value with its neighbors using convolution masks, making edges stand out while smooth regions stay near zero.
 At edges, it produces strong positive or negative responses, and zero-crossings indicate the actual edge locations.
 Because it amplifies rapid changes, the Laplacian is highly sensitive to noise.
 To reduce this effect, it is often combined with Gaussian smoothing, leading to the Laplacian of Gaussian (LoG) operator. The equation for the Laplacian is given by
-\[\nabla^2 f = \nabla^2 f_x + \nabla^2 f_y\]
-\[
-= \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2}
-\]
-\[
-= f(m+1,n) + f(m-1,n) + f(m,n+1) + f(m,n-1) - 4f(m,n)
-\]
+\begin{align*}
+\nabla^2 f &= \nabla^2 f_x + \nabla^2 f_y\\
+&= \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2} \\
+&= f(m+1,n) + f(m-1,n) + f(m,n+1) + f(m,n-1) - 4f(m,n)
+\end{align*}
 \begin{itemize}
     \item \textbf{$3 \times 3$ filter (Isotropic):}
 \[
@@ -174,7 +170,7 @@ k = 1 \;\; \implies \;\; \text{Unsharp Masking (basic sharpening)}
 k > 1 \;\; \implies \;\; \text{High-Boost Filtering (stronger sharpening effect)}
 \]
 
-\section{Geometric Operation}
+\subsection{Geometric Operation}
 
 We have an input image $I(i,j)$ and the output image is defined as  
 \[
