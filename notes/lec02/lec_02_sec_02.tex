@@ -1,0 +1,15 @@
+\section{Histogram Equalization}
+
+Histogram equalization is a method to adjust image intensities to enhance contrast. The histogram of an image is "flattened" (equalized), redistributing pixel values as uniformly as possible over the intensity range.
+
+\dfn{Histogram Equalization}{A point-wise image transformation that remaps the intensity distribution so that the output histogram is (approximately) uniform. This increases the dynamic range and enhances global contrast.}
+
+\noindent Given a gray scale image with intensities $r$ in $[0, K-1]$ and histogram $h(r)$, histogram equalization computes a transformation $HE$ as the cumulative distribution function (CDF):
+$$
+HE(r) = \sum_{k=0}^{r} \frac{h(k)}{MN}
+$$
+where $MN$ is the total number of pixels.
+
+\dfn{Histogram Equalization Transformation}{
+The transformation $s = HE(r)$ maps each input intensity $r$ to an output intensity $s$ so that $s$ is approximately uniformly distributed over $[0, K-1]$.
+}
