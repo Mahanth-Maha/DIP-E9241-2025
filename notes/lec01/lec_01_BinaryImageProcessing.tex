@@ -44,9 +44,9 @@ In the 2D case, the relation between a point $(X,Z)$ in the scene and its projec
   \node[right] at (6,0.4) {Image Point $x$};
   % Label distances
   \draw[<->] (0,0.8) -- (4,0.8);
-  \node[below] at (2,0.8) {$X$};
+  \node[below] at (2,0.8) {$Z$};
   \draw[<->] (-0.2,1) -- (-0.2,2);
-  \node[left] at (-0.2,1.5) {$Z$};
+  \node[left] at (-0.2,1.5) {$X$};
   \draw[<->] (6.2,1) -- (6.2,0.5);
   \node[right] at (6.25,0.75) {$x$};
   \draw[<->] (6,1.2) -- (4,1.2);
@@ -164,7 +164,7 @@ where $\theta$, $\phi$, and $\psi$ are rotation angles about the $x$, $y$, and $
 \subsection{Projection Matrix}
 The complete mapping from 3D world coordinates to 2D image plane is:
 \[
-s \begin{bmatrix} u \\ v \\ 1 \end{bmatrix}
+s \begin{bmatrix} x \\ y \\ 1 \end{bmatrix}
 = K M 
 \begin{bmatrix} X \\ Y \\ Z \\ 1 \end{bmatrix}
 \]
@@ -186,10 +186,12 @@ A digital image is represented as a 2D array of \textbf{pixels (picture elements
 
 \dfn{Image \& Pixel}{%
 An \textbf{image} is a 2D array $$I:\{0,\dots,M-1\}\times\{0,\dots,N-1\}\to\{0,\dots,K-1\}$$
-Each element $I[i,j]$ is a \textbf{pixel} with \textbf{intensity} (gray level) in $\{0,\dots,K-1\}$, where, 0 represents black and $K-1$ represents white. For a 8 bit storage, $B = 8$, then maximum intensity can be calculated as $K = 2^B = 2^8 = 256$, $0$ represents black and $255$ represents white. \\
-
-For normalized intensity, use $$I_n[i,j]=\frac{I[i,j]}{(K-1)}\in[0,1]$$.%
+Each element $I[i,j]$ is a \textbf{pixel} with \textbf{intensity} (gray level) in $\{0,\dots,K-1\}$, where, 0 represents black and $K-1$ represents white.
 }
+\vspace{5pt}
+\noindent For a 8 bit storage, $B = 8$, then possible number of intensities can be calculated as $K = 2^B = 2^8 = 256$, where minimum intensity is $0$ represents black and maximum intensity is $255$ represents white. \\
+
+For normalized intensity, use $$I_n[i,j]=\frac{I[i,j]}{(K-1)} \qquad \in[0,1]$$.%
 
 \subsection{Color Spaces}
 Different \textbf{color spaces} represent pixel values differently:
@@ -199,19 +201,17 @@ Different \textbf{color spaces} represent pixel values differently:
     \item YCbCr: luminance and chrominance separation. (where Y is intensity)
 \end{itemize}
 
-
-
 \subsection{Feature Extraction and Descriptors}
-\textbf{Features} capture essential information in images such as edges, corners, or textures.  
+\textbf{Features} capture essential information in images such as edges, corners, or textures.  \\
 \textbf{Descriptors} encode features into numerical representations (e.g., SIFT, HOG) for matching and recognition.
 
 \subsection{Sampling and Quantization}
 The ideal irradiance signal is sampled on a discrete grid and quantized to a finite set of gray levels.
 \begin{itemize}
-    \item \textbf{Sampling:} Selecting discrete spatial points to represent an image.\\
-    choose integer pixel sites $(i,j)$; the image becomes $I[i,j]$ on an $M\times N$ grid.
-    \item \textbf{Quantization:} Mapping continuous intensity values into discrete levels \\
-    map real intensities to $\{0,1,\dots,K-1\}$, e.g., $K=256$ for 8-bit grayscale.
+    \item \textbf{Sampling:} Selecting discrete spatial points to represent an image from continuous signal.\\
+    ex: choose integer pixel sites $(i,j) \rightarrow $  the image becomes $I[i,j]$ on an $M\times N$ grid.
+    \item \textbf{Quantization:} Mapping continuous intensity values into discrete levels (using a finite number of bits) \\
+    ex: map real intensities to $\{0,1,\dots,K-1\}$, e.g., $K=256$ for 8-bit grayscale.
 \end{itemize}
 
 \noindent \textbf{Binary images:} special case $K=2$ with intensities $\{0,1\}$ (or $\{0,255\}$ in 8-bit storage).
@@ -220,7 +220,7 @@ The ideal irradiance signal is sampled on a discrete grid and quantized to a fin
 
 \nt{Undersampling causes aliasing; inadequate quantization leads to loss of detail.}
 
-\subsection{Image Formats}
+\subsection{Image Storage and Formats}
 Typical resolutions include $256\times 256$, $512\times 512$, \textbf{1920x1080}, etc.%
 As we can calculate the number of Bytes required to store these images, we find:
 
@@ -283,28 +283,18 @@ A \textbf{gray-level histogram} is a representation of the distribution of pixel
 \paragraph{Mathematical Formulation}
 
 Let a grayscale image be
-$$I:\{0,\dots,M\!-\!1\}\times\{0,\dots,N\!-\!1\}\to\{0,\dots,K\!-\!1\}$$. 
-The \emph{histogram} counts occurrences at each gray level, given as a function as 
-$$H:\{0,\dots,K\!-\!1\}\to\{0,\dots,MN\}$$
-
-such that 
-$$ H(k) = \text{no of occurrences of gray level } k$$ 
-
-where $k \in \{0,\dots,K-1\}$
-
-\[
-H(k) \;=\; \#\{(i,j): I[i,j]=k\} \qquad k=0,\dots,K-1
-\]
-
+$$I:\{0,\dots,M\!-\!1\}\times\{0,\dots,N\!-\!1\}\to\{0,\dots,K\!-\!1\}$$
+The \emph{histogram} H, counts occurrences at each gray level, given as a function as $H:\{0,\dots,K\!-\!1\}\to\{0,\dots,MN\}$ such that 
+\begin{align*}
+H(k) &= \text{no of occurrences of gray level } k \\
+H(k) &= \#\text{Count}\{(i,j): I[i,j]=k\} ; \qquad k=0,\dots,K-1
+\end{align*}
 also, 
 \[
-\sum_{k=0}^{K-1} H(k)=MN.
+\sum_{k=0}^{K-1} H(k)=MN
 \]
-
-\noindent The \emph{normalized histogram} (PMF) is $$p(k)=\tfrac{H(k)}{MN}$$
-
-and $$\sum_k p(k)=1$$
-
+\noindent The \emph{normalized histogram} (PMF) is 
+$$p(k)=\tfrac{H(k)}{MN} \qquad \text{and} \qquad  \sum_k p(k)=1$$
 
 \ex{Interpreting Histogram Shapes}{
 Given an image whose histogram exhibits a tall peak near intensity $40$ (dark shades), and another smaller, broad peak near $200$ (bright shades), we deduce the image features a dark background with a bright foreground—ideal for segmentation via thresholding.
@@ -471,7 +461,7 @@ Choosing an appropriate threshold is crucial for effective binarization. we can 
 
 \subsection{Probability and Statistical Prerequisites}
 
-\paragraph{Basic Probability Concepts}
+
 Consider an image histogram with $L$ gray levels ($0, 1, ..., L-1$). Let $p_k$ denote the normalized probability for gray level $k$:
 $$
 p_k = \frac{n_k}{N}
@@ -479,8 +469,8 @@ $$
 where $n_k$ is the number of pixels with gray level $k$, and $N$ is the total pixel count.
 
 \subsubsection{Class Probabilities, Means, and Variances}
-For a given threshold $T$:
-
+For a given threshold $T$:\\
+\vspace{5pt}
 \noindent \textbf{Class Probability}
 \begin{itemize}
 \item Probability that the pixel belongs to class 0 (background)
@@ -500,24 +490,22 @@ For a given threshold $T$:
 \begin{align*}
 \mu_0(T) &= \sum_{k=0}^T k \cdot p(k | C_0)  \quad\text{(Mean of class 0)} \\
 \text{where} \quad p(k | C_0) &= \frac{p(k, C_0)}{p(C_0)} = \frac{p_k p(C_0 | k)}{p(C_0)} \\
-\text{for} k \in \{ 0\dots T \} \quad p(k | C_0) &= \frac{p_k}{\omega_0(T)} \\
+\text{for } k \in \{ 0\dots T \} \quad p(k | C_0) &= \frac{p_k}{\omega_0(T)} \\
 \mu_0(T) &=\frac{1}{\omega_0(T)} \sum_{k=0}^T k p_k \\
-\text{also, for} k \in \{ T+1 \dots L-1 \} \quad p(k | C_0) &= 0\\ 
-\mu_0(T) &=\frac{1}{\omega_0(T)} \sum_{k=0}^{L-1} k p_k
+\text{also, for } k \in \{ T+1 \dots L-1 \} \quad p(k | C_0) &= 0
 \end{align*}
 \item Probability that the pixel takes values k given that it belongs to class 1
 \begin{align*}
 \mu_1(T) &= \sum_{k=T+1}^{L-1} k \cdot p(k | C_1)  \quad\text{(Mean of class 1)} \\
 \text{where} \quad p(k | C_1) &= \frac{p(k, C_1)}{p(C_1)} = \frac{p_k p(C_1 | k)}{p(C_1)} \\
-\text{for} k \in \{ T+1 \dots L-1 \} \quad p(k | C_1) &= \frac{p_k}{\omega_1(T)} \\
+\text{for } k \in \{ T+1 \dots L-1 \} \quad p(k | C_1) &= \frac{p_k}{\omega_1(T)} \\
 \mu_1(T) &=\frac{1}{\omega_1(T)} \sum_{k=T+1}^{L-1} k p_k \\
-\text{also, for} k \in \{ 0 \dots T \} \quad p(k | C_1) &= 0\\
-\mu_1(T) &=\frac{1}{\omega_1(T)} \sum_{k=0}^{L-1} k p_k
+\text{also, for } k \in \{ 0 \dots T \} \quad p(k | C_1) &= 0
 \end{align*}
 
 \item Overall Image Mean
 \begin{align*}
-\mu_T &= \sum_{k=0}^{L-1} k p_k \\
+\mu (T) &= \sum_{k=0}^{L-1} k p_k \\
 &= \sum_{k=0}^{T} k p_k + \sum_{k=T+1}^{L-1} k p_k\\ 
 &= \mu_0(T) \omega_0(T) + \mu_1(T) \omega_1(T)
 \end{align*}
@@ -540,10 +528,28 @@ For a given threshold $T$:
 \item Total Image Variance
 \begin{align*}
   \sigma^2 (T) &= \sum_{k=0}^{L-1} (k - \mu_T)^2 p_k \\
-  &= \sum_{k=0}^{T} (k - \mu_T)^2 p_k + \sum_{k=T+1}^{L-1} (k - \mu_T)^2 p_k \\
-  &= \sigma_0^2(T) + \sigma_1^2(T) + \omega_0(T)[\mu_0(T) - \mu_T]^2 + \omega_1(T)[\mu_1(T) - \mu_T]^2
+  &= \sum_{k=0}^{T} (k - \mu_T)^2 p_k + \sum_{k=T+1}^{L-1} (k - \mu_T)^2 p_k
+\end{align*}
+Also, Variance is defined as,$ \operatorname{Var}[X] = E[X^2] - (E[X])^2$. Then for subpopulation i,
+\begin{align*}
+  \operatorname{Var}[X_i] &= E[X_i^2] - (E[X_i])^2\\
+  \sigma_i^2 &= E[X_i^2] - \mu_i^2\\
+  E[X_i^2] &= \sigma_i^2 + \mu_i^2 
+\end{align*}
+
+$$
+\implies E[X^2] = \sum_{i=1}^n \omega_i E[X_i^2] = \sum_{i=1}^n \omega_i(\sigma_i^2 + \mu_i^2)
+$$
+
+Thus Total Image Variance is also given as,
+\begin{align*}
+\sigma^2 &= E[X^2] - E[X]^2\\ 
+&= \left( \sum_{i=1}^n \omega_i(\sigma_i^2 + \mu_i^2) \right) - \left(\sum_{i=1}^n \omega_i \mu_i \right)^2\\
+&= \sum_{i=1}^n \omega_i \left( \sigma_i^2 + \mu_i^2 \right) - \mu^2\\
+\implies \sigma^2(T) &= \sum_{i=1}^n \omega_i(T) \left( \sigma_i^2 (T)+ \mu_i^2(T) \right) - \mu^2 (T)
 \end{align*}
 \end{itemize}
+
 
 \dfn{Within Class Variance $\sigma_w^2(T)$}{
   The variance of pixel intensities within class is given by:
@@ -626,7 +632,7 @@ These methods are simple and computationally efficient but may not perform well 
 
 Otsu's Binarization method uses Second Order Statistics to find the optimal threshold for image binarization.
 
-\dfn{Otsu’s Binarization}{The process of determining the threshold $T^*$ that maximizes the inter-class variance between foreground and background, thus optimally segmenting a bimodal histogram image.}
+\dfn{Otsu’s Binarization}{The process of determining the threshold $T^*$ that maximizes the inter-class variance (or minimizes the intra-class variance) between foreground and background, thus optimally segmenting a bimodal histogram image.}
 
 \paragraph{Optimization Criteria}
 
@@ -654,9 +660,73 @@ Maximizing the between-class variance $\sigma_b^2(T)$ is equivalent to minimizin
 \]
 since $\sigma^2$ is fixed for a given image histogram.
 }
-\nt{In practice, Otsu's method typically maximizes $\sigma_b^2(T)$, but formulations based on minimizing $\sigma_w^2(T)$ yield the same optimal threshold $T^*$.}
 
-\subsection{Method 1: Maximization of Inter-Class Variance}
+\noindent \textbf{Proof of Equivalence.} Since $\sigma^2 = \sigma_w^2(T) + \sigma_b^2(T)$ for all $T$, maximizing $\sigma_b^2(T)$ is the same as minimizing $\sigma_w^2(T)$, because \(\sigma^2\) is independent of \(T\). 
+
+\noindent Now, for any two thresholds \(T_1,T_2\) ,Suppose $$\sigma_b^2(T_1) > \sigma_b^2(T_2)$$ subtracting the same constant \(\sigma^2\) from both sides gives
+\[
+\sigma^2 - \sigma_b^2(T_1) < \sigma^2 - \sigma_b^2(T_2)
+\]
+That is,
+$$
+\sigma_w^2(T_1) < \sigma_w^2(T_2)
+$$
+Therefore
+\[
+\;\arg\max_T \sigma_b^2(T)\;=\;\arg\min_T \sigma_w^2(T)\;
+\]
+
+% \noindent Equivalently, using the explicit form \[\sigma_b^2(T)=\omega_0(T)\,\omega_1(T)\big(\mu_0(T)-\mu_1(T)\big)^2\]
+% maximizing this expression over \(T\) yields the same \(T\) that minimizes \(\sigma_w^2(T)\) because
+% \[
+% \sigma_w^2(T)=\sigma^2-\sigma_b^2(T).
+% \]
+% Hence any \(T\) that increases the between-class separation \(\omega_0\omega_1(\mu_0-\mu_1)^2\) necessarily reduces the within-class scatter and vice versa.
+
+\noindent Or
+\begin{align*}
+\text{Maximize } \sigma_b^2(T) &\Leftrightarrow \text{Minimize } \sigma_w^2(T) \\
+\end{align*}
+
+\nt{
+\begin{itemize}
+  \item The identity relies on \(\sigma^2\) being fixed (global histogram is fixed). If the data used to compute \(\sigma^2\) changed with \(T\), the equivalence would not hold.
+  \item Since \(\omega_0,\omega_1\ge 0\) and \(\mu_0,\mu_1\) are real, \(\sigma_b^2(T)\ge 0\). Maximizing \(\sigma_b^2\) therefore finds the threshold giving the largest possible separation between class means (weighted by class sizes), which is precisely the threshold that minimizes the residual within-class variance.
+\end{itemize}
+}
+
+
+
+
+\subsection{Method 1: Minimization of Within-Class Variance}
+
+Threshold $T^*$ is selected to minimize the within-class variance $\sigma_w^2(T)$.
+$$
+  T^* = \arg\min_T \sigma_w^2(T) = \arg\min_T \left[ \omega_0(T) \sigma_0^2(T) + \omega_1(T) \sigma_1^2(T) \right]
+$$
+
+\noindent This approach explicitly minimizes intra-class variance $\sigma_w^2(T)$.
+
+\begin{enumerate}
+    \item Compute the histogram and probabilities $p_i = n_i/N$ for each gray level $i$.
+    \item For each possible threshold $T$ (from gray level $1$ to $L-2$): \begin{itemize}
+        \item Calculate class weights (probabilities): $\omega_0(T)$ and $\omega_1(T)$.
+        \item Calculate class means: $\mu_0(T)$ and $\mu_1(T)$.
+        \item Calculate class variance: $\sigma_0^2(T)$ and $\sigma_1^2(T)$ (from class means and probabilities)
+        \item Compute within-class variance:
+            \[
+            \sigma_w^2(T) = \omega_0(T) \sigma_0^2(T) + \omega_1(T) \sigma_1^2(T)
+            \]
+    \end{itemize}
+    \item Find $T^*$ that minimizes $\sigma_w^2(T)$.
+\end{enumerate}
+
+
+% \nt{In practice, Otsu's method typically maximizes $\sigma_b^2(T)$, but formulations based on minimizing $\sigma_w^2(T)$ yield the same optimal threshold $T^*$.}
+
+\nt{This method uses Second order statistics and requires us to compute $\sigma_i^2$ for every t, which is inefficient. Hence we use the Method 2, maximizing the inter class variance in practice, which only depends on First order statistics and since we proved that maximizing $\sigma_b^2(T)$ is the same as minimizing $\sigma_w^2(T)$, and are dual's of each other, the $T*$ in solving both the optimization problems yields same value. Thus the Method 2 is more popular computationally.}
+
+\subsection{Method 2: Maximization of Inter-Class Variance}
 
 Threshold $T^*$ is selected to maximize the between-class variance $\sigma_b^2(T)$.
 $$
@@ -706,7 +776,7 @@ Now,
 \[
 \sigma_b^2(2) = 0.8 \times 0.2 \times (0.75 - 3)^2 \approx 0.8 \times 0.2 \times 5.0625 \approx 0.81
 \]
-
+Thus we have,
 \begin{center}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{c|c|c|c|c|c}
@@ -726,67 +796,8 @@ $T$ & $\omega_0(T)$ & $\omega_1(T)$ & $\mu_0(T)$ & $\mu_1(T)$ & $\sigma_b^2(T)$ 
 
 }
 
-\subsection{Method 2: Minimization of Within-Class Variance}
 
-Threshold $T^*$ is selected to minimize the within-class variance $\sigma_w^2(T)$.
-$$
-  T^* = \arg\min_T \sigma_w^2(T) = \arg\min_T \left[ \omega_0(T) \sigma_0^2(T) + \omega_1(T) \sigma_1^2(T) \right]
-$$
-
-\noindent This approach explicitly minimizes intra-class variance $\sigma_w^2(T)$.
-
-\begin{enumerate}
-    \item For each threshold $T$, calculate:
-    \begin{align*}
-        \sigma_w^2(T) = \omega_0(T) \sigma_0^2(T) + \omega_1(T) \sigma_1^2(T)
-    \end{align*}
-    where $\sigma_k^2(T)$ are variances for classes $k=0,1$, based on histogram statistics within each class.
-    \item Find $T^*$ that minimizes $\sigma_w^2(T)$.
-\end{enumerate}
-
-
-
-\clm{Proof of Equivalence}{}{
-Since $\sigma^2 = \sigma_w^2(T) + \sigma_b^2(T)$ for all $T$, maximizing $\sigma_b^2(T)$ is the same as minimizing $\sigma_w^2(T)$.
-
-Now, because \(\sigma^2\) is independent of \(T\), for two thresholds \(T_1,T_2\) we have
-\[
-\sigma_b^2(T_1) > \sigma_b^2(T_2)
-\quad\Longleftrightarrow\quad
-\sigma_w^2(T_1) < \sigma_w^2(T_2),
-\]
-since subtracting the same constant \(\sigma^2\) from both sides reverses neither inequalities nor signs but simply gives
-\[
-\sigma^2 - \sigma_b^2(T_1) < \sigma^2 - \sigma_b^2(T_2)
-\quad\Longleftrightarrow\quad
-\sigma_w^2(T_1) < \sigma_w^2(T_2).
-\]
-Therefore
-\[
-\;\arg\max_T \sigma_b^2(T)\;=\;\arg\min_T \sigma_w^2(T)\;
-\]
-
-Equivalently, using the explicit form \[\sigma_b^2(T)=\omega_0(T)\,\omega_1(T)\big(\mu_0(T)-\mu_1(T)\big)^2\]
-maximizing this expression over \(T\) yields the same \(T\) that minimizes \(\sigma_w^2(T)\) because
-\[
-\sigma_w^2(T)=\sigma^2-\sigma_b^2(T).
-\]
-Hence any \(T\) that increases the between-class separation \(\omega_0\omega_1(\mu_0-\mu_1)^2\) necessarily reduces the within-class scatter and vice versa.
-
-Thus,
-\begin{align*}
-\text{Maximize } \sigma_b^2(T) &\Leftrightarrow \text{Minimize } \sigma_w^2(T) \\
-\end{align*}
-
-}
-\nt{
-\begin{itemize}
-  \item The identity relies on \(\sigma^2\) being fixed (global histogram is fixed). If the data used to compute \(\sigma^2\) changed with \(T\), the equivalence would not hold.
-  \item Since \(\omega_0,\omega_1\ge 0\) and \(\mu_0,\mu_1\) are real, \(\sigma_b^2(T)\ge 0\). Maximizing \(\sigma_b^2\) therefore finds the threshold giving the largest possible separation between class means (weighted by class sizes), which is precisely the threshold that minimizes the residual within-class variance.
-\end{itemize}
-}
-
-\subsection{Algorithm: Otsu’s Binarization (most used)}
+\subsection{Algorithm: Otsu’s Binarization (generalization)}
 
 \begin{enumerate}
     \item Compute image histogram.
@@ -803,7 +814,7 @@ Thus,
 \nt{Otsu’s method is most effective for bimodal histograms, but may be suboptimal for multi-modal or unimodal histograms. Variations and generalizations (multi-level, local thresholding) exist for more complex cases.}
 
 
-\section{Connected Component Analysis}
+\section{Segmentation in Binary Images (Connected Component Analysis)}
 
 A \emph{connected component} in a binary image is a maximal group of adjacent foreground pixels, where adjacency is defined by connectivity (typically, 4-connected or 8-connected).
 
@@ -905,24 +916,20 @@ A \emph{connected component} in a binary image is a maximal group of adjacent fo
 }
 
 \dfn{Connectedness}{
-  the pixels $(x,y)$ and $(s,t)$ are connected if there exists a path between them consisting entirely of same polarity pixels (all foreground or all background).
+  The pixels $(x,y)$ and $(s,t)$ are connected if there exists a path between them consisting entirely of same polarity pixels (all foreground or all background).
 }
 
 \noindent A \textbf{4-Connected Component} is a set of pixels that are connected to each other through 4-connectivity paths. 
 
 \subsection{Extraction of Connected Components}
 
-\clm{Labeling Algorithms}{}{
-Every pixel belonging to a connected component can be assigned a unique label using the connected component labeling algorithm.
-}
+
 
 \dfn{Region index array}{
   Region index array is a matrix of the same size as the binary image, where each pixel is assigned a label (integer) corresponding to the connected component it belongs to. Background pixels are typically labeled as 0.
 }
-
-\noindent The goal is to assign distinct labels to all connected components in a binary image.
-
-\paragraph{Labeling Algorithm}
+  
+\paragraph{Labeling Algorithm} Every pixel belonging to a connected component can be assigned a unique label using the connected component labeling algorithm. The goal is to assign distinct labels to all connected components in a binary image.
 \begin{enumerate}
     \item Scan the image pixel by pixel in a defined order (e.g., left-to-right, top-to-bottom).
     \item For each foreground pixel, examine its neighbors (depending on the connectivity rule).
@@ -1025,7 +1032,7 @@ Correctly extracting connected components is crucial for counting objects, segme
 
 Binary images require specialized filtering techniques to process and enhance them, typically via mathematical morphology.
 
-\subsection{Window}
+\subsection{Window (Kernel)}
 
 A \textbf{window} or \textbf{kernel} in filtering is a small submatrix (usually square, e.g., $3 \times 3$) that moves systematically over the image, determining how each pixel should be transformed based on its neighborhood.
 
@@ -1036,9 +1043,9 @@ In 1D signals, a window is a segment of the signal used for processing. For exam
 \begin{center}
 \begin{tikzpicture}[scale=1.2]
 % Draw 3x3 grid
-\foreach \x in {0,1,2}
-  \foreach \y in {0,1,2}
-    \draw[gray!50] (\x,\y) rectangle ++(1,1);
+% \foreach \x in {0,1,2}
+%   \foreach \y in {0,1,2}
+%     \draw[gray!50] (\x,\y) rectangle ++(1,1);
 
 % Row window: highlight center row
 \foreach \x in {0,1,2}
@@ -1055,9 +1062,9 @@ In 1D signals, a window is a segment of the signal used for processing. For exam
 \hspace{1cm}
 \begin{tikzpicture}[scale=1.2]
 % Draw 3x3 grid
-\foreach \x in {0,1,2}
-  \foreach \y in {0,1,2}
-    \draw[gray!50] (\x,\y) rectangle ++(1,1);
+% \foreach \x in {0,1,2}
+%   \foreach \y in {0,1,2}
+%     \draw[gray!50] (\x,\y) rectangle ++(1,1);
 
 % Column window: highlight center column
 \foreach \y in {0,1,2}
@@ -1077,7 +1084,7 @@ In 1D signals, a window is a segment of the signal used for processing. For exam
 
 Windows are mostly non-casual, means pixels can be influenced by their neighbors in both dimensions. A window can be defined as a rectangular region centered around a pixel, encompassing its surrounding pixels. 
 
-Few shapes include square, Cross, circle, diamond, etc.
+\noindent Few shapes include Square, Cross, Circle, Diamond, etc.
 
 \paragraph{Common Window Shapes}
 \begin{center}
@@ -1088,21 +1095,22 @@ Few shapes include square, Cross, circle, diamond, etc.
 \begin{tikzpicture}
 \foreach \x in {0,1,2}
   \foreach \y in {0,1,2}
-    \draw[gray!60] (\x,\y) rectangle ++(1,1);
+    \fill[blue!40] (\x,\y) rectangle ++(1,1);
 \foreach \x in {0,1,2}
   \foreach \y in {0,1,2}
-    \fill[blue!40] (\x,\y) rectangle ++(1,1);
+    \draw[gray!60] (\x,\y) rectangle ++(1,1);
 \end{tikzpicture}
 &
 % Cross window
 \begin{tikzpicture}
-\foreach \x in {0,1,2}
-  \foreach \y in {0,1,2}
-    \draw[gray!60] (\x,\y) rectangle ++(1,1);
 \foreach \i in {0,1,2}
   \fill[red!40] (1,\i) rectangle ++(1,1);
 \foreach \i in {0,1,2}
   \fill[red!40] (\i,1) rectangle ++(1,1);
+
+\foreach \x in {0,1,2}
+  \foreach \y in {0,1,2}
+    \draw[gray!60] (\x,\y) rectangle ++(1,1);
 \end{tikzpicture}
 \end{tabular}
 \end{center}
@@ -1114,10 +1122,10 @@ A set of techniques used in image processing for analyzing and processing binary
 \paragraph{Window Notation}
 Let,
 \[
-B_i = (p_i, q_i) \quad \text{s.t.} \quad (p_i, q_i) \in B 
+B_i = (p_i, q_i) \quad \text{s.t.} \quad (0, 0) \in B 
 \]
 
-then, A window is given as, 
+\noindent then, A window is given as, 
 
 \[
 B = \{ B_1, B_2, B_3, \dots, B_{2p+1} \}
@@ -1137,11 +1145,11 @@ Consider a SQUARE $3 \times 3$ window centered at pixel $(0,0)$:
 
 \paragraph{Window Set} Given a image I and a Window B, the window set is given as 
 \[
-B \downarrow I(i,j) = \{I(i +p, j+q) | (p,q) \in B\}
+B \diamond I(i,j) = \{I(i +p, j+q) \; : \; (p,q) \in B\}
 \]
 
 
-\subsection{Image Edges and Window Boundaries}
+\paragraph{Image Edges and Window Boundaries}
 
 Applying filters near image edges requires care, as the window may extend outside the image domain. Strategies include:
 \begin{itemize}
@@ -1150,17 +1158,18 @@ Applying filters near image edges requires care, as the window may extend outsid
     \item \textbf{Wrap-around:} For mathematical convenience (rare in practice).
 \end{itemize}
 
+
+\nt{In morphological operations, careful handling of edges is necessary to avoid artifacts such as unwanted erosion or dilation at the image boundaries.}
+
 \subsection{Binary Filter}
 
 \dfn{Binary Filter}{A transformation applied to a binary image using a specified window (kernel), resulting in output pixels determined by logical operations (AND, OR, etc.) on the neighborhood.}
 
 \noindent Let G be a binary operation on a windowed set, then the binary filtered image is given as:
 \[
-J(i,j) = G(B \downarrow I(i,j)) \qquad \forall (i,j) \in I
+J(i,j) = G(B \diamond I(i,j)) \qquad \forall (i,j) \in I
 \]
 
-
-\nt{In morphological operations, careful handling of edges is necessary to avoid artifacts such as unwanted erosion or dilation at the image boundaries.}
 
 \subsubsection{Fundamental Morphological Operations}
 
@@ -1168,18 +1177,26 @@ Mathematical morphology operates using set theory to process shapes in binary im
 
 \dfn{Dilation}{For a binary image $I$ and structuring element $B$, the dilation $ J = \text{DILATE}(I,B) = I \oplus B$ is defined as:
 $$
-J(i,j) = OR \{ B \downarrow I(i,j) \}
+J(i,j) = OR \{ B \diamond I(i,j) \}
 $$
 
-where $$OR\{x_1, x_2, \ldots, x_n\} = \bigvee_{k} x_k = x_1 +x2 + \ldots +x_n = \text{max}(x_1, x_2, \ldots, x_n)$$ is the logical OR operation or the Maximum pixel value picker over the set.
+where
+\[
+OR\{x_1, x_2, \ldots, x_n\} = \bigvee_{k} x_k = x_1 + x_2 + \cdots + x_n = \text{max}(x_1, x_2, \ldots, x_n)
+\]
+is the logical OR operation or the Maximum pixel value picker over the set.
 }
 
 \dfn{Erosion}{For a binary image $I$ and structuring element $B$, the erosion $J = \text{ERODE}(I,B) = I \ominus B$ is:
 $$
-J(i,j) = AND \{ B \downarrow I(i,j) \}
+J(i,j) = AND \{ B \diamond I(i,j) \}
 $$
 
-where $$AND\{x_1, x_2, \ldots, x_n\} = \bigwedge_{k} x_k = x_1 \cdot x_2 \cdot \ldots \cdot x_n = \text{min}(x_1, x_2, \ldots, x_n)$$ is the logical AND operation or the Minimum pixel value picker over the set.
+where 
+\[
+AND\{x_1, x_2, \ldots, x_n\} = \bigwedge_{k} x_k = x_1 \cdot x_2 \cdot \ldots \cdot x_n = \text{min}(x_1, x_2, \ldots, x_n)
+\] 
+is the logical AND operation or the Minimum pixel value picker over the set.
 }
 
 \paragraph{Algorithmic Steps for binary image}
@@ -1197,16 +1214,23 @@ $$
 $$
 where $I^c$ is the complement of the image $I$.
 
-This comes straight from the definitions of dilation and erosion, as the operations are fundamentally linked through the concept of set complementation, i.e., $\bar{(x_1 + x_2)} = \bar{x_1} \cdot \bar{x_2}$.
+This comes straight from the definitions of dilation and erosion, as the operations are fundamentally linked through the concept of set complementation, i.e., $\overline{(x_1 + x_2)} = \overline{x_1} \cdot \overline{x_2}$.
 
 \subsubsection{Derived Morphological Operations}
 
 \paragraph{Majority Filter}
 The majority filter is a simple yet effective morphological operation used to remove noise from binary images. It works by replacing each pixel's value with the majority value of its neighbors within a specified window. 
 \[
-J(i,j) = \text{MAJORITY} \{ B \downarrow I(i,j) \}
+J(i,j) = \text{MAJORITY} \{ B \diamond I(i,j) \}
 \]
-This can help to smooth out small irregularities in the image.
+This can help to smooth out small irregularities in the image. The majority operation is a rank filter that lies between dilation (max) and erosion (min)
+\[
+\text{MAJORITY}\{x_{1},...,x_{n}\} =
+\begin{cases}
+1,\quad \text{if } \sum_{k=1}^n x_k > n/2 \\
+0,\quad \text{otherwise}
+\end{cases}
+\]
 
 \paragraph{Boundary Detection}
 
@@ -1214,7 +1238,14 @@ The boundary of objects in a binary image can be extracted as:
 $$
 \text{Boundary}(I) = \text{XOR}\{I, \text{ERODE}(I,B)\}
 $$
-
+Outer boundary:
+\[
+\text{Boundary}(I) = \text{DILATE}(I,B) - I
+\]
+Inner boundary:
+\[
+\text{Boundary}(I) = I - \text{ERODE}(I,B)
+\]
 
 \clm{Morphological Property}{}{
   \begin{itemize}
@@ -1225,3 +1256,25 @@ $$
   \end{itemize}
 }
 
+
+\paragraph{Summary Table for Binary Filters}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Filter} & \textbf{Definition} & \textbf{Use} \\
+\hline
+Dilation & $J(i,j) = \max \{ B \diamond I(i,j) \}$ & Expands boundaries \\
+Erosion & $J(i,j) = \min \{ B \diamond I(i,j) \}$ & Shrinks/cleans boundaries \\
+Majority & $\text{Majority}\{ B \diamond I(i,j) \}$ & Reduces noise \\
+Boundary & $I \oplus \text{ERODE}(I,B)$ & Highlights edges \\
+Opening & $\text{DILATE}(\text{ERODE}(I,B),B)$ & Removes small objects \\
+Closing & $\text{ERODE}(\text{DILATE}(I,B),B)$ & Fills holes \\
+Hit-or-Miss & Pattern matching & Detects shapes \\
+Top-Hat & Opening/closing difference & Feature extraction \\
+Gradient & $\text{DILATE}(I,B) - \text{ERODE}(I,B)$ & Edge detection \\
+\hline
+\end{tabular}
+\caption{Binary morphological filters and their uses}
+\end{table}
