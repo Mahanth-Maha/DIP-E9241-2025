@@ -1,15 +1,11 @@
-
+% !TEX root=./../maha-dip-notes.tex
 \section{Point Operations}
 
 Point operations are image transformations where each output pixel is computed solely from its corresponding input pixel, without regard for neighboring values.
 
-\dfn{Point Operation}{A transformation applied to each pixel individually, $J(x,y) = T[I(x, y)]$, where $I(x, y)$ is the input image and $T$ is a point-wise mapping function.}
+\dfn{Point Operation}{A transformation $T$ is a point-wise mapping function, given as $$ T : I_{ij} \rightarrow J_{ij} $$ applied to each pixel individually, $$J(x,y) = T[I(x, y)]$$ xwhere $I(x, y)$ is the input.}
 
-These operations can be linear or non-linear, and are different from local operators/spatial filters (i.e., those that consider neighboring pixels such as ERODE, DILATE, etc.).
-
-No explicit neighborhood information is used in point operations, and no explicit modifications based on spatial context. however, they can still be influenced by global image properties (e.g., overall brightness, contrast).
-
-
+These operations can be linear or non-linear, and are different from local operators/spatial filters (i.e., those that consider neighboring pixels such as ERODE, DILATE, etc.). No explicit neighborhood information is used in point operations, and no explicit modifications based on spatial context. however, they can still be influenced by global image properties (e.g., overall brightness, contrast).
 
 \subsection{Image Offset (Brightness Adjustment)}
 The simplest point operation is the offset, where a constant value $c$ is added to all pixel intensities:
@@ -34,7 +30,7 @@ Image scaling multiplies all pixel intensities by a constant factor $a$:
 $$
 J(x, y) = a \cdot I(x, y)
 $$
-A scaling factor $a > 1$ increases contrast, while $0 < a < 1$ darkens the image.
+A scaling factor $a > 1$ increases contrast (intensity range is widened), while $0 < a < 1$ darkens the image (intensity range is shrunk).
 
 
 \subsection{Offset and Scaling}
