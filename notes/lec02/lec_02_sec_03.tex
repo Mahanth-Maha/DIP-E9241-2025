@@ -1,5 +1,6 @@
 % !TEX root=./../maha-dip-notes.tex
 \section{Linear System or Filters}
+\label{lec_02_sec_03}
 
 Linear systems and their associated filters form the foundation for many image processing techniques. Filters are algorithms or operations that modify pixel values based on defined rules, often employing local neighborhoods.
 
@@ -130,7 +131,7 @@ A system that is both linear and shift-invariant is known as an \textbf{LSIS}. F
 
 \begin{align*}
 T(\alpha f_1 + f_2) &= \alpha T(f_1) + T(f_2) \\
-T(f(x,y)) &= T(f(x-a,y-b))
+T(f(x-a,y-a)) &= g(x-a,y-b) \quad \text{if} \; T(f(x,y)) &= g(x,y)
 \end{align*}  
 
 we can think of linearity as a superposition of weighted impulse responses, and shift-invariance as the ability to shift the input and output without changing the system's behavior. for example, linearity in brightness variation and shift invariance is scene movement.
@@ -309,7 +310,7 @@ Then,
 Hence, {\bf Convolution is a linear shift invariant system (LSIS)}.
 
 \subsubsection{Finding the Filter $h$}
-Given the convolution system with $h(x)$ hidden, How can we find it?
+\textbf{Given the convolution system with $h(x)$ hidden, Can we find $h(x)$?}
 
 \noindent {\bf Yes}, We can use the function $f(x)$ as a unit impulse function. As the \emph{discrete impulse} $\delta(x, y)$ is defined as
 $$
