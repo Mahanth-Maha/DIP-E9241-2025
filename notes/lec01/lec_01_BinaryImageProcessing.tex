@@ -1,6 +1,6 @@
 % !TEX root=./../maha-dip-notes.tex
 \chapter{Binary Image Processing}
-
+\label{lec_01}
 \section{Introduction}
 
 \dfn{Image Definition}{
@@ -814,8 +814,8 @@ $T$ & $\omega_0(T)$ & $\omega_1(T)$ & $\mu_0(T)$ & $\mu_1(T)$ & $\sigma_b^2(T)$ 
 \nt{Otsu’s method is most effective for bimodal histograms, but may be suboptimal for multi-modal or unimodal histograms. Variations and generalizations (multi-level, local thresholding) exist for more complex cases.}
 
 
-\section{Segmentation in Binary Images (Connected Component Analysis)}
-
+\section{Segmentation in Binary Images}
+\subsection{Connected Component Analysis}
 A \emph{connected component} in a binary image is a maximal group of adjacent foreground pixels, where adjacency is defined by connectivity (typically, 4-connected or 8-connected).
 
 \dfn{Connected Component}{A subset of foreground pixels $(p, q)$ such that for any pixel $p$ in the subset, there exists a sequence of pixels in the subset linking $p$ to $q$ via connected neighbors.
@@ -1257,24 +1257,24 @@ Inner boundary:
 }
 
 
-\paragraph{Summary Table for Binary Filters}
+\subsubsection*{Summary Table for Binary Filters}
 
 \begin{table}[H]
-\centering
-\begin{tabular}{|l|l|l|}
-\hline
-\textbf{Filter} & \textbf{Definition} & \textbf{Use} \\
-\hline
-Dilation & $J(i,j) = \max \{ B \diamond I(i,j) \}$ & Expands boundaries \\
-Erosion & $J(i,j) = \min \{ B \diamond I(i,j) \}$ & Shrinks/cleans boundaries \\
-Majority & $\text{Majority}\{ B \diamond I(i,j) \}$ & Reduces noise \\
-Boundary & $I \oplus \text{ERODE}(I,B)$ & Highlights edges \\
-Opening & $\text{DILATE}(\text{ERODE}(I,B),B)$ & Removes small objects \\
-Closing & $\text{ERODE}(\text{DILATE}(I,B),B)$ & Fills holes \\
-Hit-or-Miss & Pattern matching & Detects shapes \\
-Top-Hat & Opening/closing difference & Feature extraction \\
-Gradient & $\text{DILATE}(I,B) - \text{ERODE}(I,B)$ & Edge detection \\
-\hline
-\end{tabular}
-\caption{Binary morphological filters and their uses}
+  \centering
+  \begin{tabular}{|l|l|l|}
+  \hline
+  \textbf{Filter} & \textbf{Definition} & \textbf{Use} \\
+  \hline
+  Dilation & $J(i,j) = \max \{ B \diamond I(i,j) \}$ & Expands boundaries \\
+  Erosion & $J(i,j) = \min \{ B \diamond I(i,j) \}$ & Shrinks/cleans boundaries \\
+  Majority & $\text{Majority}\{ B \diamond I(i,j) \}$ & Reduces noise \\
+  Boundary & $I \oplus \text{ERODE}(I,B)$ & Highlights edges \\
+  Opening & $\text{DILATE}(\text{ERODE}(I,B),B)$ & Removes small objects \\
+  Closing & $\text{ERODE}(\text{DILATE}(I,B),B)$ & Fills holes \\
+  Hit-or-Miss & Pattern matching & Detects shapes \\
+  Top-Hat & Opening/closing difference & Feature extraction \\
+  Gradient & $\text{DILATE}(I,B) - \text{ERODE}(I,B)$ & Edge detection \\
+  \hline
+  \end{tabular}
+  \caption{Binary morphological filters and their uses}
 \end{table}
